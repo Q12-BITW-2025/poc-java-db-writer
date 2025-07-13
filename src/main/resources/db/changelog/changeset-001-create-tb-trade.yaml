@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: belanir
+      changes:
+        - createTable:
+            tableName: TB_TRADE
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: exchange
+                  type: VARCHAR(255)
+              - column:
+                  name: symbol
+                  type: VARCHAR(255)
+              - column:
+                  name: timestamp
+                  type: BIGINT
+              - column:
+                  name: price
+                  type: DOUBLE PRECISION
+              - column:
+                  name: size
+                  type: DOUBLE PRECISION
+              - column:
+                  name: trade_id
+                  type: VARCHAR(255)

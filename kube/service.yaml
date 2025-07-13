@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-spring-boot-app
+  labels:
+    app: my-spring-boot-app
+spec:
+  type: ClusterIP   # Default, for internal cluster traffic only
+  selector:
+    app: my-spring-boot-app
