@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class TradeService {
 
@@ -19,23 +18,28 @@ public class TradeService {
 
     private final CircularBuffer<Trade> tradeBuffer;
 
-    /**
-     * This method starts automatically after Spring initializes the bean.
-     * It loops forever, polling the ring buffer and saving to the DB.
-     */
-    @PostConstruct
+    public TradeService(TradeRepository tradeRepository, CircularBuffer<Trade> tradeBuffer) {
+        this.tradeRepository = tradeRepository;
+        this.tradeBuffer = tradeBuffer;
+        this.init();
+    }
+
     public void init() {
+        log.info("TradeService Starting worker thread");
         Thread worker = new Thread(this::saveTrade, "trade-processor-thread");
         worker.setDaemon(true);
         worker.start();
+        log.info("Worker thread started");
     }
 
     @SneakyThrows
     void saveTrade() {
         while (true) {
             Trade trade = tradeBuffer.get();
+            log.info("Got {} from buffer", trade);
             if (trade != null) {
-                tradeRepository.save(trade);
+                Trade savedTrade = tradeRepository.save(trade);
+                log.info("Saved as {}", savedTrade);
             }
             Thread.sleep(50);
         }
